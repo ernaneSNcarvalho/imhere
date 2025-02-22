@@ -1,16 +1,23 @@
+import { useState, useEffect } from "react";
 import { Alert, FlatList, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 import { Participant } from "../../components/Participant";
-
 import { styles } from "./styles";
 
 export function Home() {
-  const participants = ['Rodrigo', 'Vini', 'Diego', 'Biro', 'Ana', 'Isa', 'Jack', 'Mayk', 'João'];
-  
+  const [participants, setParticipants] = useState<string[]>([]);
+  const [participantName, setParticipantName] = useState(''); // estado para o input
+
   function handleParticipantAdd() {
-    if (participants.includes("Rodrigo")) {
-      return Alert.alert("Participante existe", "Já existe um participante na lista com esse nome.");
+    if (!participantName.trim()) {
+      return Alert.alert("Nome inválido", "Por favor, digite um nome válido.");
     }
+    if (participants.includes(participantName)) {
+      return Alert.alert("Participante existente", "Já existe um participante na lista com esse nome.");
+    }
+
+    setParticipants(prevState => [...prevState, participantName]);
+    setParticipantName(''); // limpa o campo de texto após adicionar
   }
 
   function handleParticipantRemove(name: string) {
@@ -41,12 +48,12 @@ export function Home() {
           style={styles.input}
           placeholder="Nome do participante"
           placeholderTextColor="#6B6B6B"
+          value={participantName}
+          onChangeText={setParticipantName} // atualiza o estado conforme digita
         />
         
         <TouchableOpacity style={styles.button} onPress={handleParticipantAdd}>
-          <Text style={styles.buttonText}>
-            +
-          </Text>
+          <Text style={styles.buttonText}>+</Text>
         </TouchableOpacity>
       </View>
 
